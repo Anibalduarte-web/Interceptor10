@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Gerador de IA - versão única</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: "Inter", sans-serif; }
+body {
+background: #09090b;
+color: #e4e4e7;
+padding: 40px;
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+h1 {
+font-size: 40px;
+color: #fafafa;
+font-weight: bold;
+}
+span {
+color: #22c55e;
+}
+p {
+color: #71717a;
+margin: 10px;
+}
+textarea {
+resize: none;
+width: 100%;
+max-width: 640px;
+padding: 16px;
+border: 1px solid #27272a;
+border-radius: 10px;ackground: #141419;
+color: #fafafa;
+outline: none;
+margin-top: 20px;
+}
+button {
+width: 100%;
+max-width: 640px;ackground: #22c55e;
+font-size: 16px;
+font-weight: bold;
+border-radius: 10px;
+border: none;
+padding: 15px;
+cursor: pointer;
+margin-top: 10px;
+}
+.bloco-codigo {
+background: #141419;
+border: 1px solid #27272a;
+border-radius: 12px;
+padding: 16px;
+font-size: 14px;
+color: #34d399;
+line-height: 2;
+overflow: auto;
+width: 100%;
+max-width: 450px;
+max-height: 450px;
+white-space: pre-wrap;
+}
+.resultado-codigo {
+width: 100%;
+max-width: 450px;
+height: 100%;
+min-height: 350px;
+border: 1px solid #27272a;
+border-radius: 12px;
+background: #141419;
+max-height: 450px;
+margin: 10px;
+}
+.resultado {
+width: 100%;
+max-width: 1200px;
+display: flex;
+justify-content: center;
+gap: 20px;
+margin-top: 20px;
+}
+.campo {
+width: 100%;
+max-width: 640px;
+margin-top: 10px;
+}
+.rotulo {
+display: block;
+color: #71717a;
+font-size: 13px;
+margin: 10px 0 6px;
+}
+input, select {
+width: 100%;
+max-width: 640px;
+padding: 14px 16px;
+border: 1px solid #27272a;
+border-radius: 10px;
+background: #141419;
+color: #fafafa;
+outline: none;
+}
+.linha {
+width: 100%;
+max-width: 640px;
+display: flex;
+gap: 10px;
+margin-top: 10px;
+}
+.linha > div {
+flex: 1;
+}
+.status {
+width: 100%;
+max-width: 640px;
+margin-top: 10px;
+padding: 12px 14px;
+border-radius: 10px;
+border: 1px solid #27272a;
+background: #141419;
+color: #e4e4e7;
+display: none;
+white-space: pre-wrap;
+}
+.status.ok {
+border-color: #14532d;
+color: #86efac;
+}
+.status.erro {
+border-color: #7f1d1d;
+color: #fca5a5;
+}
+.botao-secundario {
+width: 100%;
+max-width: 640px;
+background: #141419;
+color: #22c55e;
+border: 1px solid #22c55e;
+}
+.botao-secundario:disabled,
+button:disabled {
+opacity: 0.7;
+cursor: not-allowed;
+}
+.exemplos {
+width: 100%;
+max-width: 640px;
+margin-top: 15px;
+padding: 12px;
+background: #141419;
+border: 1px solid #27272a;
+border-radius: 10px;
+color: #71717a;
+font-size: 12px;
+}
+.exemplos-titulo {
+color: #e4e4e7;
+font-weight: bold;
+margin-bottom: 8px;
+}
+.exemplo-item {
+cursor: pointer;
+padding: 6px;
+margin: 4px 0;
+border-radius: 6px;
+transition: all 0.2s;
+}
+.exemplo-item:hover {
+background: #27272a;
+color: #22c55e;
+}
+</style>
+</head>
+<body>
+
+<h1>Gerador de IA <span>em uma página</span></h1>
+<p>Digite uma descrição simples e veja o código HTML/CSS gerado em tempo real</p>
+
+<div class="campo">
+<label class="rotulo" for="apiKey">Chave da API (cole aqui)</label>
+<input id="apiKey" type="password" placeholder="Cole sua chave (ex: xai-... ou gsk_...)" autocomplete="off" />
+</div>
+
+<div class="linha">
+<div>
+<label class="rotulo" for="endereco">Endereço (endpoint)</label>
+<input id="endereco" type="text" value="https://api.x.ai/v1/chat/completions" />
+</div>
+<div>
+<label class="rotulo" for="modelo">Modelo</label>
+<select id="modelo">
+<option value="grok-2-latest">grok-2-latest</option>
+<option value="grok-2-mini">grok-2-mini</option>
+</select>
+</div>
+</div>
+
+<textarea id="descricao" placeholder="Ex.: Crie um triangulo amarelo que gire. Ou: Mostre uma equação de hipérbole. Ou: Um card com borda verde e botão quicando"></textarea>
+
+<div class="exemplos">
+<div class="exemplos-titulo">💡 Exemplos rápidos (clique para usar):</div>
+<div class="exemplo-item" onclick="document.getElementById('descricao').value = 'Crie um triângulo amarelo que gira continuamente'; document.getElementById('descricao').focus();">→ Triângulo amarelo que gira</div>
+<div class="exemplo-item" onclick="document.getElementById('descricao').value = 'Mostre a equação de uma hipérbole em HTML/CSS'; document.getElementById('descricao').focus();">→ Equação de hipérbole</div>
+<div class="exemplo-item" onclick="document.getElementById('descricao').value = 'Um card com borda verde e um botão que quica'; document.getElementById('descricao').focus();">→ Card com botão quicando</div>
+<div class="exemplo-item" onclick="document.getElementById('descricao').value = 'Desenhe um círculo que pulsa com cores degradê'; document.getElementById('descricao').focus();">→ Círculo pulsante colorido</div>
+</div>
+
+<button id="gerar" aria-label="Gerar código">Gerar Código ⚡</button>
+<button class="botao-secundario" id="copiar">Copiar Código 📋</button>
+
+<div id="status" class="status" aria-live="polite"></div>
+
+<div class="resultado">
+<div>
+<p style="color:#71717a; margin: 10px 10px 6px;">Código Gerado</p>
+<pre id="codigoGerado" class="bloco-codigo"></pre>
+</div>
+<div>
+<p style="color:#71717a; margin: 10px 10px 6px;">Preview</p>
+<iframe id="preview" class="resultado-codigo" sandbox="allow-scripts" title="Preview da saída"></iframe>
+</div>
+</div>
+
+<script>
+(function () {
+let botaoGerar = document.getElementById("gerar");
+let botaoCopiar = document.getElementById("copiar");
+let inputApiKey = document.getElementById("apiKey");
+let inputEndereco = document.getElementById("endereco");
+let selectModelo = document.getElementById("modelo");
+let textareaDescricao = document.getElementById("descricao");
+
+let codigoBox = document.getElementById("codigoGerado");
+let iframePreview = document.getElementById("preview");
+let statusBox = document.getElementById("status");
+
+function setStatus(tipo, texto) {
+    statusBox.classList.remove("ok", "erro");
+    statusBox.style.display = "block";
+    statusBox.classList.add(tipo);
+    statusBox.textContent = texto;
+}
+
+function clearStatus() {
+    statusBox.style.display = "none";
+    statusBox.textContent = "";
+    statusBox.classList.remove("ok", "erro");
+}
+
+function setLoading(isLoading) {
+    botaoGerar.disabled = isLoading;
+    botaoCopiar.disabled = isLoading;
+    botaoGerar.textContent = isLoading ? "Gerando... aguarde" : "Gerar Código ⚡";
+}
+
+async function gerarCodigo() {
+    clearStatus();
+
+    let chave = (inputApiKey.value || "").trim();
+    let endereco = (inputEndereco.value || "").trim();
+    let modelo = (selectModelo.value || "").trim();
+    let textoUsuario = (textareaDescricao.value || "").trim();
+
+    if (!endereco) {
+        setStatus("erro", "Informe o endpoint (endereço da API).");
+        return;
+    }
+    if (!chave) {
+        setStatus("erro", "Cole a chave da API no campo 'Chave da API'.");
+        return;
+    }
+    if (!textoUsuario) {
+        setStatus("erro", "Digite uma descrição antes de gerar.");
+        return;
+    }
+
+    setLoading(true);
+    codigoBox.textContent = "";
+    iframePreview.srcdoc = "";
+
+    let systemPrompt = `Você é um especialista em gerar código HTML e CSS simples e funcional.
+
+REGRAS CRÍTICAS:
+1. Responda SOMENTE com código HTML/CSS puro - SEM markdown, SEM crases, SEM explicações
+2. Se pedir animação de rotação, use @keyframes com rotate()
+3. Se pedir animação de quicada/pulo, use @keyframes com translateY()
+4. Se pedir para desenhar formas, use <div> com CSS ou <canvas>/<svg>
+5. Para equações matemáticas, use <math> HTML ou render com texto e símbolos CSS
+6. Sempre comece com <style> inline ou em tag, depois o HTML
+7. Use cores vibrantes conforme solicitado
+8. Mantenha o código SIMPLES e COMPACTO (máximo 150 linhas)
+
+Exemplos de padrão esperado:
+- Triângulo: usar border trick no CSS ou SVG
+- Hipérbole: usar SVG com path ou equação em HTML
+- Animações: @keyframes com animation: name duration infinite;`;
+
+    let payload = {
+        model: modelo,
+        messages: [
+            {
+                role: "system",
+                content: systemPrompt
+            },
+            {
+                role: "user",
+                content: textoUsuario
+            }
+        ],
+        temperature: 0.3,
+        max_tokens: 1500
+    };
+
+    try {
+        let resposta = await fetch(endereco, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + chave
+            },
+            body: JSON.stringify(payload)
+        });
+
+        let raw = await resposta.text();
+
+        let dados = null;
+        try {
+            dados = JSON.parse(raw);
+        } catch (e) {
+            dados = null;
+        }
+
+        if (!resposta.ok) {
+            let msgApi = (dados && (dados.error && dados.error.message)) || (dados && dados.message) || raw || "Sem corpo na resposta";
+            throw new Error("HTTP " + resposta.status + " - " + msgApi);
+        }
+
+        let resultado = dados && dados.choices && dados.choices[0] && dados.choices[0].message && dados.choices[0].message.content;
+        if (!resultado) {
+            throw new Error("Resposta OK, porém veio sem choices[0].message.content. Corpo: " + raw);
+        }
+
+        codigoBox.textContent = resultado;
+        iframePreview.srcdoc = resultado;
+        setStatus("ok", "✅ Sucesso: código gerado e carregado no preview.");
+
+    } catch (err) {
+        console.error(err);
+        setStatus(
+            "erro",
+            "❌ Falha ao chamar API.\n\n" +
+            String(err && err.message ? err.message : err) +
+            "\n\nDica: aperte F12 > Console/Network para ver detalhes."
+        );
+    } finally {
+        setLoading(false);
+    }
+}
+
+async function copiarCodigo() {
+    clearStatus();
+    let texto = (codigoBox.textContent || "").trim();
+
+    if (!texto) {
+        setStatus("erro", "Não há código para copiar. Gere primeiro.");
+        return;
+    }
+
+    try {
+        await navigator.clipboard.writeText(texto);
+        setStatus("ok", "✅ Código copiado para a área de transferência!");
+    } catch (err) {
+        console.error(err);
+        setStatus("erro", "Não foi possível copiar automaticamente. Selecione o texto e copie manualmente.");
+    }
+}
+
+botaoGerar.addEventListener("click", gerarCodigo);
+botaoCopiar.addEventListener("click", copiarCodigo);
+})();
+</script>
+
+</body>
+</html>
